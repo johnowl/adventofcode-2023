@@ -4,8 +4,6 @@ import Cube
 import CubeSet
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import parseLine
 import sumGameIdsThatCanBePlayed
 
@@ -18,9 +16,9 @@ class Part1KtTest {
         val parsed = parseLine(line)
         assertThat(parsed.id).isEqualTo(3)
         assertThat(parsed.revealed).containsExactlyInAnyOrder(
-            CubeSet(setOf(Cube("green", 8), Cube("blue", 6), Cube("red", 20))),
-            CubeSet(setOf(Cube("blue", 5), Cube("red", 4), Cube("green", 13))),
-            CubeSet(setOf(Cube("green", 5), Cube("red", 1)))
+            CubeSet.of(Cube("green", 8), Cube("blue", 6), Cube("red", 20)),
+            CubeSet.of(Cube("blue", 5), Cube("red", 4), Cube("green", 13)),
+            CubeSet.of(Cube("green", 5), Cube("red", 1))
         )
     }
 
@@ -35,7 +33,7 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green""".split("\n")
 
         val parsedGames = rawGames.map { parseLine(it) }.toSet()
 
-        val cubeSet = CubeSet(setOf(Cube("red", 12), Cube("green", 13), Cube("blue", 14)))
+        val cubeSet = CubeSet.of(Cube("red", 12), Cube("green", 13), Cube("blue", 14))
 
         val result = sumGameIdsThatCanBePlayed(cubeSet, parsedGames)
 

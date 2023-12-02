@@ -6,7 +6,7 @@ fun main() {
         .map { parseLine(it) }
         .toSet()
         .let { games ->
-            val cubeSet = CubeSet(setOf(Cube("red", 12), Cube("green", 13), Cube("blue", 14)))
+            val cubeSet = CubeSet.of(Cube("red", 12), Cube("green", 13), Cube("blue", 14))
             val result = sumGameIdsThatCanBePlayed(cubeSet, games)
             println(result)
         }
@@ -22,19 +22,9 @@ fun parseLine(line: String): Game {
 
 fun sumGameIdsThatCanBePlayed(cubeSet: CubeSet, games: Set<Game>): Int =
     games.filter {
-        gameIsPlayable(it, cubeSet)
+        it.isPlayableWith(cubeSet)
     }.sumOf {
         it.id
-    }
-
-private fun gameIsPlayable(game: Game, cubeSet: CubeSet): Boolean =
-    game.revealed.flatMap {
-        it.cubes
-    }.all {
-        val maxAmount = cubeSet.cubes.find { cube -> cube.color == it.color }?.amount
-            ?: error("Cube color ${it.color} not found in cube set")
-
-        it.amount <= maxAmount
     }
 
 fun parseCubeSet(cubes: String): CubeSet {
@@ -47,6 +37,16 @@ fun parseCubeSet(cubes: String): CubeSet {
 }
 
 data class Game(val id: Int, val revealed: List<CubeSet>) {
+    fun isPlayableWith(cubeSet: CubeSet): Boolean =
+        revealed.flatMap {
+            it.cubes
+        }.all {
+            val maxAmount = cubeSet.cubes.find { cube -> cube.color == it.color }?.amount
+                ?: error("Cube color ${it.color} not found in cube set")
+
+            it.amount <= maxAmount
+        }
+
     fun getMaxOfEachColor(): CubeSet {
         val result = revealed
             .flatMap { it.cubes }
@@ -58,5 +58,12 @@ data class Game(val id: Int, val revealed: List<CubeSet>) {
         return CubeSet(result)
     }
 }
+
 data class Cube(val color: String, val amount: Int)
-data class CubeSet(val cubes: Set<Cube>)
+
+@JvmInline
+value class CubeSet(val cubes: Set<Cube>) {
+    companion object {
+        fun of(vararg cubes: Cube): CubeSet = CubeSet(cubes.toSet())
+    }
+}

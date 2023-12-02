@@ -3,7 +3,6 @@ package day2
 import Cube
 import CubeSet
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class Part2KtTest {
