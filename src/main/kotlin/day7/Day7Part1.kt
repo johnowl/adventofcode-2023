@@ -55,7 +55,11 @@ enum class HandType(val power: Int) {
                 // AAAAB
                 // JJJJA
                 when (unusedJokers) {
-                    0 -> FourOfAKind
+                    0 -> when (amountOfJokersInHandType) {
+                        0 -> FourOfAKind
+                        4 -> FiveOfAKind
+                        else -> error("Invalid amount of jokers")
+                    }
                     1 -> FiveOfAKind
                     else -> error("Invalid amount of jokers")
                 }
@@ -65,38 +69,56 @@ enum class HandType(val power: Int) {
                 // AAABB
                 // AAAJJ
                 // JJJAA
-                if (amountOfJokersInHandType == 2) FiveOfAKind else FullHouse
+                when (amountOfJokersInHandType) {
+                    0 -> FullHouse
+                    2 -> FiveOfAKind
+                    3 -> FiveOfAKind
+                    else -> error("Invalid amount of jokers")
+                }
             }
 
             ThreeOfAKind -> {
-                // AAABJ
                 // AAABC
-                // JJJAB -> ABBAB
+                // JJJBC
+                // AAAJB
                 when (unusedJokers) {
-                    0 -> if (amountOfJokersInHandType == 3) FullHouse else ThreeOfAKind
+                    0 -> when (amountOfJokersInHandType) {
+                        0 -> ThreeOfAKind
+                        3 -> FourOfAKind
+                        else -> error("Invalid amount of jokers")
+                    }
                     1 -> FourOfAKind
                     else -> error("Invalid amount of jokers")
                 }
             }
 
             TwoPair -> {
+                // AABBC
                 // AABBJ
                 // AAJJB
-                // AABBC
                 when (unusedJokers) {
-                    0 -> if (amountOfJokersInHandType == 2) FourOfAKind else TwoPair
+                    0 -> when (amountOfJokersInHandType) {
+                        0 -> TwoPair
+                        1 -> ThreeOfAKind
+                        2 -> FourOfAKind
+                        else -> error("Invalid amount of jokers")
+                    }
                     1 -> FullHouse
                     else -> error("Invalid amount of jokers")
                 }
             }
 
             OnePair -> {
-                // AABCJ
                 // AABCD
+                // AABCJ
                 // JJABC
                 when (unusedJokers) {
-                    0 -> if (amountOfJokersInHandType == 2) ThreeOfAKind else OnePair
-                    1 -> TwoPair
+                    0 -> when (amountOfJokersInHandType) {
+                        0 -> OnePair
+                        2 -> ThreeOfAKind
+                        else -> error("Invalid amount of jokers")
+                    }
+                    1 -> ThreeOfAKind
                     else -> error("Invalid amount of jokers")
                 }
             }
@@ -191,7 +213,6 @@ fun main() {
             val game = parse(input)
             game.calculateBids().sum().let(::println)
         }
-    // 253919701 22:30
 }
 
 fun parse(input: String): Game =
